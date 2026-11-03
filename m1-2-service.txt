@@ -1,0 +1,39 @@
++ $ install -d -m 0755 /usr/local/sbin /var/lib/helios /var/log/helios
++ $ cat
++ $ chmod 0755 /usr/local/sbin/helios-collect.sh
++ $ id helios
+id: « helios » : utilisateur inexistant
++ $ useradd --system --shell /sbin/nologin --home-dir /var/lib/helios helios
++ $ chown -R helios:helios /var/lib/helios /var/log/helios
++ $ cat
++ $ systemctl daemon-reload
++ $ systemctl enable --now helios-collect.service
+Created symlink /etc/systemd/system/multi-user.target.wants/helios-collect.service → /etc/systemd/system/helios-collect.service.
++ $ systemd-analyze security helios-collect.service
++ $ tail -1 /root/TP1/captures/m1-2-security-avant.txt
+→ Overall exposure level for helios-collect.service: 9.2 UNSAFE 😨
++ $ cat
++ $ systemctl daemon-reload
++ $ systemctl restart helios-collect.service
++ $ systemd-analyze security helios-collect.service
++ $ tail -1 /root/TP1/captures/m1-2-security-apres.txt
+→ Overall exposure level for helios-collect.service: 5.3 MEDIUM 😐
++ $ sleep 3
++ $ systemctl status helios-collect.service --no-pager
+● helios-collect.service - Collecteur de telemetrie Helios
+     Loaded: loaded (/etc/systemd/system/helios-collect.service; enabled; preset: disabled)
+     Active: active (running) since Mon 2026-11-02 13:51:05 CET; 3s ago
+       Docs: https://wiki.helios.lan/collect
+   Main PID: 2028 (helios-collect.)
+      Tasks: 2 (limit: 10622)
+     Memory: 664.0K (peak: 1.2M)
+        CPU: 115ms
+     CGroup: /system.slice/helios-collect.service
+             ├─2028 /usr/bin/bash /usr/local/sbin/helios-collect.sh
+             └─2035 sleep 15
+
+nov. 02 13:51:05 srv-core.helios.lan systemd[1]: Started Collecteur de telemetrie Helios.
++ $ tail -3 /var/lib/helios/telemetry.csv
+2026-11-02T13:51:04+01:00,1.15,1370008
+2026-11-02T13:51:05+01:00,1.13,1369660
++ $ set +x
